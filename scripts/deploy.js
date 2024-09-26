@@ -10,8 +10,6 @@ async function main() {
     await token.waitForDeployment();
     const tokenContractAddress = await token.getAddress();
     console.log("Token address:", tokenContractAddress);
-    // TODO: find another way to store contract address
-    // localStorage.setItem('tokenContractAddress', tokenContractAddress);
 
     // deploying voting contract
     const Party = await ethers.getContractFactory("PartyVote");
