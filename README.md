@@ -6,6 +6,12 @@ Vote-Chain v1.0.0
 A decentralized web3 voting platform designed to enhance transparency and prevent vote manipulation. It ensures only registered voters can participate, guaranteeing a secure and tamper-proof election process.
 <br/>
 
+# Features
+1. Add Party (only for the contract's owner)
+2. Vote for a party (only for logged in users who has accepted the minted token)
+3. Search for voters vote
+<br/>
+
 # Getting Started
 
 You must have a Metamask wallet. Download [here](https://metamask.io/).<br/>
