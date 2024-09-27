@@ -8,15 +8,28 @@ A decentralized web3 voting platform designed to enhance transparency and preven
 
 # Getting Started
 
-You must have a Metamask wallet. Download [here](https://metamask.io/).
+You must have a Metamask wallet. Download [here](https://metamask.io/).<br/>
+For testnet, you can switch Metamask network to sepolia testnet.<br/>
+For localhost, add a new custom network with RPC URL `http://127.0.0.1:8545/` and chain id `31337`
 <br/>
 
 ## To install dependencies
 
 ```
 npm install
+npx hardhat
 ```
-<br/>
+
+## To create environment
+1. Create `.env` file in the root folder
+2. Go to the `.env` file and add these keys (you can choose your own constant name):
+```
+ALCHEMY_SEPOLIA_URL=<YOUR_KEY_HERE>
+SEPOLIA_PRIVATE_KEY=<YOUR_KEY_HERE>
+ETHERSCAN_KEY=<YOUR_KEY_HERE>
+```
+3. [Optional] Go to `hardhat.config.js` and adjust the settings.<br/>
+Remove / change the `sepolia` network and `etherscan` if needed. Or change the constant name to the one you entered in `.env` file.
 
 ## To compile the contract
 ```
@@ -31,14 +44,12 @@ to
 src/ABIs/<fileName>.json
 ```
 This need to be done everytime if the contract is changed and compiled in order to get the correct ABIs which we will be using to get the contract.
-<br/>
 
 ## To Start the server locally
 
 ```
 npx hardhat node
 ```
-<br/>
 
 ## To deploy the contract
 
@@ -57,14 +68,10 @@ export const TOKEN_CONTRACT_ADDRESS = '<your_token_smart_contract_address>'; // 
 export const VOTE_CONTRACT_ADDRESS = '<your_party_smart_contract_address>'; // FILL IN PARTY VOTE CONTRACT ADDRESS HERE
 ```
 
-<br/>
-<br/>
-
 ## To run the webapp
 
 ```
 npm start
 ```
-<br/>
 
 Have fun voting!
