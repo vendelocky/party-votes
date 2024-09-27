@@ -68,8 +68,8 @@ export const getTokenMinted = async () => {
             used: usedVote,
             remain: remaining
         };
-    } catch (e) {
-        console.log(e);
+    } catch (error) {
+        console.log(error);
     }
     return {
         minted: '0',
@@ -85,15 +85,20 @@ export const addParty = async (name) => {
         console.log('add party transaction:', tx);
         await tx.wait();
         alert(`successfully added ${name} to the party!`);
-    } catch (e) {
+    } catch (error) {
         alert('adding party rejected!');
     }
 };
 
 export const getParties = async () => {
-    const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
-    const parties = await voteContract.getParties();
-    return parties ?? [];
+    try {
+        const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
+        const parties = await voteContract.getParties();
+        return parties;
+    } catch (error) {
+        console.log(error);
+    }
+    return [];
 };
 
 export const callVote = async (name) => {
