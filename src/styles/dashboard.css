@@ -52,3 +52,16 @@
 .d-flex {
     justify-content: space-between;
 }
+
+.no-party {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.no-party h4 {
+    text-align: center;
+    line-height: 2;
+}

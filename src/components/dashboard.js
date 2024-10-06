@@ -63,6 +63,7 @@ const Dashboard = () => {
   const [tokenSupply, setTokenSupply] = useState({minted: '0', used: '0', remain: '0'});
   const [partyList, setPartyList] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showParty, setShowParty] = useState(true);
   const [partyName, setPartyName] = useState('');
 
   const handleClose = () => setShowModal(false);
@@ -83,6 +84,7 @@ const Dashboard = () => {
         color: getRandomColor()
       };
     });
+    setShowParty(partiesWithColor?.length > 0 ? true : false);
     setPartyList(partiesWithColor);
   };
 
@@ -144,13 +146,25 @@ const Dashboard = () => {
     <div>
       <h1>Vote for your party</h1>
 
-      <div className="party-card-div">
-        {displayCard()}
-      </div>
-
-      <div className="vote-bar-div">
-        <Bar data={data} options={CHART_OPTIONS} />
-      </div>
+      {showParty ? (
+        <>
+          <div className="party-card-div">
+            {displayCard()}
+          </div>
+          <div className="vote-bar-div">
+            <Bar data={data} options={CHART_OPTIONS} />
+          </div>
+        </>
+      ) : (
+        <div className="no-party">
+          <h4>
+            If you are seeing this message instead of the party list and the distribution,<br/>
+            please make sure you have a Metamask wallet on your browser.<br/>
+            Connect your wallet to this page and accept the permission request.<br/><br/>
+            Refresh the page for the permission re-request in case that you have rejected it previously.
+          </h4>
+        </div>
+      )}
 
       <div className="token-container">
         <div className="token-div">

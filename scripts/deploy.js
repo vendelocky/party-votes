@@ -10,12 +10,10 @@ async function main() {
     await token.waitForDeployment();
     const tokenContractAddress = await token.getAddress();
     console.log("Token address:", tokenContractAddress);
-    // TODO: find another way to store contract address
-    // localStorage.setItem('tokenContractAddress', tokenContractAddress);
 
     // deploying voting contract
     const Party = await ethers.getContractFactory("PartyVote");
-    const party = await Party.deploy("Democrats", tokenContractAddress);
+    const party = await Party.deploy("Democrats", tokenContractAddress); // add party on initialised deployment
     await party.waitForDeployment();
     const partyContractAddress = await party.getAddress();
     console.log("Party address:", partyContractAddress);

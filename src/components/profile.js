@@ -7,7 +7,7 @@ import { getVotes } from '../utils/contractUtilities';
 import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
-  const { account, login, logout } = useContext(AccountContext);
+  const { account, login, logout, inProgress } = useContext(AccountContext);
   const navigate = useNavigate();
   const [voter, setVoter] = useState();
 
@@ -29,8 +29,8 @@ const Profile = () => {
       <>
         <h4>By register or login, you will be connected to your wallet</h4>
         <div className="login-div">
-          <Button variant="primary" id="login" size="lg" onClick={login}>
-            Register / Login
+          <Button variant="primary" id="login" size="lg" onClick={login} disabled={inProgress}>
+            Login
           </Button>
         </div>
       </>
