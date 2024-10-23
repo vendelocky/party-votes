@@ -6,7 +6,7 @@ export const TOKEN_CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa
 export const VOTE_CONTRACT_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'; // FILL IN PARTY VOTE CONTRACT ADDRESS HERE
 
 const getContract = async (contractAdress, abi) => {
-    try{
+    try {
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
         const contract = new ethers.Contract(contractAdress, abi, signer);
@@ -23,9 +23,9 @@ const addTokenToMetaMask = async () => {
             params: {
                 type: 'ERC20',
                 options: {
-                address: TOKEN_CONTRACT_ADDRESS,
-                symbol: 'VTK',
-                decimals: 18,
+                    address: TOKEN_CONTRACT_ADDRESS,
+                    symbol: 'VTK',
+                    decimals: 18,
                 },
             },
         });
@@ -49,16 +49,16 @@ const getUsedToken = async () => {
 
 export const mintToken = async () => {
     const tokenContract = await getContract(TOKEN_CONTRACT_ADDRESS, votokenABI.abi);
-    try{
+    try {
         const tx = await tokenContract.mint();
         console.log('Mint transaction:', tx);
         await tx.wait();
         console.log('Minting completed!');
         await addTokenToMetaMask();
     } catch (error) {
-        if (error.reason === 'rejected') {
+        if (error?.reason === 'rejected') {
             alert('token minting has been rejected! Please relogin again and accept the request.');
-        } else if (error.reason && error.reason.includes('This user has already got the token')) {
+        } else if ((error?.reason?.includes('This user has already got the token')) || (error?.message?.includes('This user has already got the token'))) {
             console.log('user already got the token');
             return true;
         } else {
@@ -76,7 +76,7 @@ export const getTokenMinted = async () => {
         const supply = displayBigInt(mintedToken);
         const usedVote = await getUsedToken();
         const remaining = supply - usedVote;
-        
+
         return {
             minted: supply,
             used: usedVote,
@@ -106,7 +106,7 @@ export const addParty = async (name) => {
 
 export const getParties = async () => {
     const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
-    try{
+    try {
         const parties = await voteContract.getParties();
         return parties;
     } catch (e) {
@@ -123,9 +123,9 @@ export const callVote = async (name) => {
         await tx.wait();
         alert(`You have voted for ${name}!`);
     } catch (error) {
-        if (error.reason && error.reason.includes(`You don't have the token to vote!`)) {
+        if ((error?.reason?.includes(`You don't have the token to vote!`)) || (error?.message?.includes(`You don't have the token to vote!`))) {
             alert(`You don't have the token! you're not eligible to vote.`);
-        } else if (error.reason && error.reason.includes('You have already voted')) {
+        } else if ((error?.reason?.includes('You have already voted')) || (error?.message?.includes('You have already voted'))) {
             alert('You have already voted!');
         } else {
             alert(`Voting failed! Please try again!`);
@@ -135,10 +135,10 @@ export const callVote = async (name) => {
 
 export const getVotes = async (voter) => {
     const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
-    try{
+    try {
         const votes = await voteContract.getVotes(voter);
         return votes ?? null;
-    } catch(error) {
+    } catch (error) {
         alert("Address not found! Please enter a valid address");
     }
 };

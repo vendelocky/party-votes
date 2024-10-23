@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import '../styles/profile.css';
 import { AccountContext } from '../Provider';
@@ -11,14 +11,14 @@ const Profile = () => {
   const navigate = useNavigate();
   const [voter, setVoter] = useState();
 
-  const getVoter = async() => {
+  const getVoter = async () => {
     const voter = await getVotes(account);
     setVoter(voter);
   };
 
   useEffect(() => {
-    account && getVoter(); 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    account && getVoter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
   return (
@@ -26,32 +26,32 @@ const Profile = () => {
       <h1>My Profile</h1>
 
       {!account && (
-      <>
-        <h4>By register or login, you will be connected to your wallet</h4>
-        <div className="login-div">
-          <Button variant="primary" id="login" size="lg" onClick={login} disabled={inProgress}>
-            Login
-          </Button>
-        </div>
-      </>
+        <>
+          <h4>By register or login, you will be connected to your wallet</h4>
+          <div className="login-div">
+            <Button variant="primary" id="login" size="lg" onClick={login} disabled={inProgress}>
+              {inProgress ? "Logging in..." : "Login"}
+            </Button>
+          </div>
+        </>
       )}
 
       {!!account && (
-      <>
-        <VoteCard account={account} voter={voter} />
-        <div className="login-div">
-          {(!voter?.[1] && 
-            <Button variant="success" id="vote" size="lg" onClick={() => {navigate('/')}}>
-              Use your vote now!
+        <>
+          <VoteCard account={account} voter={voter} />
+          <div className="login-div">
+            {(!voter?.[1] &&
+              <Button variant="success" id="vote" size="lg" onClick={() => { navigate('/') }}>
+                Use your vote now!
+              </Button>
+            )}
+          </div>
+          <div className="login-div">
+            <Button variant="danger" id="vote" size="lg" onClick={logout}>
+              Logout
             </Button>
-          )}
-        </div>
-        <div className="login-div">
-          <Button variant="danger" id="vote" size="lg" onClick={logout}>
-            Logout
-          </Button>
-        </div>
-      </>
+          </div>
+        </>
       )}
     </div>
   );

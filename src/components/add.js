@@ -14,7 +14,7 @@ const Add = () => {
     const partyName = inputRef.current.value;
     if (partyName.trim()) {
       const isNameExists = await checkPartyName(partyName.trim());
-      if(!isNameExists) {
+      if (!isNameExists) {
         await addParty(partyName);
         inputRef.current.value = null;
       } else {
@@ -44,7 +44,7 @@ const Add = () => {
             ref={inputRef}
           />
           <Button variant="primary" id="add" onClick={handleOnClick} disabled={isLoading}>
-            Add to blockchain
+            {isLoading ? "Adding party..." : "Add to blockchain"}
           </Button>
         </InputGroup>
       </div>

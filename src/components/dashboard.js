@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../styles/dashboard.css';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -18,7 +18,7 @@ const CHART_OPTIONS = {
     },
     y: {
       stacked: true,
-      display: false,    
+      display: false,
     }
   },
   plugins: {
@@ -60,11 +60,12 @@ const getRandomColor = () => {
 
 const Dashboard = () => {
   const { account } = useContext(AccountContext);
-  const [tokenSupply, setTokenSupply] = useState({minted: '0', used: '0', remain: '0'});
+  const [tokenSupply, setTokenSupply] = useState({ minted: '0', used: '0', remain: '0' });
   const [partyList, setPartyList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showParty, setShowParty] = useState(true);
   const [partyName, setPartyName] = useState('');
+  const [isVoting, setIsVoting] = useState(false);
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
@@ -104,7 +105,9 @@ const Dashboard = () => {
   };
 
   const handleVote = async () => {
+    setIsVoting(true);
     await callVote(partyName);
+    setIsVoting(false);
     handleClose();
     initialise();
   };
@@ -112,7 +115,7 @@ const Dashboard = () => {
   const displayCard = () => {
     return partyList?.map((party) => {
       return (
-        <div className="party-card" style={{borderColor: party.color}}>
+        <div className="party-card" style={{ borderColor: party.color }}>
           <div className="card-title">{party.name}</div>
           <div className="card-description">
             <div>
@@ -120,10 +123,10 @@ const Dashboard = () => {
             </div>
             {!!account && (
               <div>
-              <Button variant="success" id="vote" size="sm" onClick={() => handleOnClick(party.name)}>
-                Vote
-              </Button>
-            </div>
+                <Button variant="success" id="vote" size="sm" onClick={() => handleOnClick(party.name)}>
+                  Vote
+                </Button>
+              </div>
             )}
           </div>
         </div>
@@ -158,9 +161,9 @@ const Dashboard = () => {
       ) : (
         <div className="no-party">
           <h4>
-            If you are seeing this message instead of the party list and the distribution,<br/>
-            please make sure you have a Metamask wallet on your browser.<br/>
-            Connect your wallet to this page and accept the permission request.<br/><br/>
+            If you are seeing this message instead of the party list and the distribution,<br />
+            please make sure you have a Metamask wallet on your browser.<br />
+            Connect your wallet to this page and accept the permission request.<br /><br />
             Refresh the page for the permission re-request in case that you have rejected it previously.
           </h4>
         </div>
@@ -194,7 +197,7 @@ const Dashboard = () => {
           <Button variant="outline-secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="success" onClick={handleVote}>
+          <Button variant="success" onClick={handleVote} disabled={isVoting}>
             Vote
           </Button>
         </Modal.Footer>
