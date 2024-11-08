@@ -77,7 +77,6 @@ const Dashboard = () => {
 
   const fetchParty = async () => {
     const parties = await getParties();
-    console.log(parties);
     const partiesWithColor = parties?.map((party) => {
       return {
         name: party[0],

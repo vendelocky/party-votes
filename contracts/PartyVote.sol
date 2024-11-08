@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
 import "hardhat/console.sol";
@@ -6,26 +6,29 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 interface ITokenContract {
     function balanceOf(address account) external view returns (uint256);
-    function totalSupply() external view returns (uint256);
 }
 
+error vote__noToken();
+error vote__doneVoting();
+error vote__noParty();
+
 contract PartyVote is Ownable {
-    ITokenContract public token;
+    ITokenContract private token;
     struct Party {
         string name;
         uint count;
     }
-    Party[] public parties;
     struct Votes {
         Party party;
         bool hasVoted;
         uint time;
     }
-    mapping(address=>Votes) public votes;
-    uint public totalVoteUsed;
+    mapping(address => Votes) private votes;
+    uint256 public totalVoteUsed;
+    Party[] private parties;
 
     constructor(string memory name, address tokenAddress) Ownable(msg.sender) {
-        token = ITokenContract(tokenAddress); // insert token contract address here
+        token = ITokenContract(tokenAddress);
         parties.push(Party(name, 0));
     }
 
@@ -39,22 +42,27 @@ contract PartyVote is Ownable {
     }
 
     function vote(string memory name) public {
-        require(token.balanceOf(msg.sender) >= 1, "You don't have the token to vote!");
-        require(!votes[msg.sender].hasVoted, "You have already voted");
+        if (token.balanceOf(msg.sender) < 1) {
+            revert vote__noToken();
+        }
+
+        if (votes[msg.sender].hasVoted) {
+            revert vote__doneVoting();
+        }
 
         for (uint i = 0; i < parties.length; i++) {
             if (keccak256(bytes(parties[i].name)) == keccak256(bytes(name))) {
                 parties[i].count += 1;
                 votes[msg.sender] = Votes({
                     party: parties[i],
-                    hasVoted: true, 
+                    hasVoted: true,
                     time: block.timestamp
                 });
-                totalVoteUsed ++;
+                totalVoteUsed++;
                 return;
             }
         }
-        revert("Party not found");
+        revert vote__noParty();
     }
 
     function getVotes(address voter) public view returns (Votes memory) {

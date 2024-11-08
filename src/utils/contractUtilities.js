@@ -5,6 +5,11 @@ import partyVoteABI from '../ABIs/PartyVote.json';
 export const TOKEN_CONTRACT_ADDRESS = '0x5FbDB2315678afecb367f032d93F642f64180aa3'; // FILL IN TOKEN CONTRACT ADDRESS HERE
 export const VOTE_CONTRACT_ADDRESS = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'; // FILL IN PARTY VOTE CONTRACT ADDRESS HERE
 
+// error names in constant
+const ERROR_DONE_VOTING = 'vote__doneVoting';
+const ERROR_NO_TOKEN = 'vote__noToken';
+const ERROR_GOT_TOKEN = 'mint__gotToken';
+
 const getContract = async (contractAdress, abi) => {
     try {
         const provider = new ethers.BrowserProvider(window.ethereum);
@@ -14,6 +19,12 @@ const getContract = async (contractAdress, abi) => {
     } catch (e) {
         console.log('Connect to Metamask has been rejected: ', e);
     }
+};
+
+const getErrorName = (error, abi) => {
+    const iface = new ethers.Interface(abi);
+    const decodedError = error?.data ? iface.parseError(error.data) : '';
+    return decodedError?.name;
 };
 
 const addTokenToMetaMask = async () => {
@@ -56,9 +67,10 @@ export const mintToken = async () => {
         console.log('Minting completed!');
         await addTokenToMetaMask();
     } catch (error) {
+        const errorName = getErrorName(error, votokenABI.abi);
         if (error?.reason === 'rejected') {
             alert('token minting has been rejected! Please relogin again and accept the request.');
-        } else if ((error?.reason?.includes('This user has already got the token')) || (error?.message?.includes('This user has already got the token'))) {
+        } else if (errorName === ERROR_GOT_TOKEN) {
             console.log('user already got the token');
             return true;
         } else {
@@ -123,9 +135,12 @@ export const callVote = async (name) => {
         await tx.wait();
         alert(`You have voted for ${name}!`);
     } catch (error) {
-        if ((error?.reason?.includes(`You don't have the token to vote!`)) || (error?.message?.includes(`You don't have the token to vote!`))) {
+        const errorName = getErrorName(error, partyVoteABI.abi);
+        if (error?.reason === 'rejected') {
+            alert(`Voting request has been rejected! Please try again!`);
+        } else if (errorName === ERROR_NO_TOKEN) {
             alert(`You don't have the token! you're not eligible to vote.`);
-        } else if ((error?.reason?.includes('You have already voted')) || (error?.message?.includes('You have already voted'))) {
+        } else if (errorName === ERROR_DONE_VOTING) {
             alert('You have already voted!');
         } else {
             alert(`Voting failed! Please try again!`);
