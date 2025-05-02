@@ -6,7 +6,11 @@ module.exports = {
   networks: {
     sepolia: {
       url:process.env.ALCHEMY_SEPOLIA_URL,
-      accounts: [process.env.SEPOLIA_PRIVATE_KEY],
+      accounts: [process.env.PRIVATE_KEY],
+    },
+    tenderly: {
+      url:process.env.TENDERLY_SEPOLIA_URL,
+      accounts: [process.env.PRIVATE_KEY],
     },
   },
   etherscan: {
