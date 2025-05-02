@@ -10,14 +10,20 @@ const ERROR_DONE_VOTING = 'vote__doneVoting';
 const ERROR_NO_TOKEN = 'vote__noToken';
 const ERROR_GOT_TOKEN = 'mint__gotToken';
 
-const getContract = async (contractAdress, abi) => {
+// Global contract instances
+export let tokenContract = null;
+export let voteContract = null;
+
+export const initializeContracts = async () => {
     try {
         const provider = new ethers.BrowserProvider(window.ethereum);
         const signer = await provider.getSigner();
-        const contract = new ethers.Contract(contractAdress, abi, signer);
-        return contract;
+        tokenContract = new ethers.Contract(TOKEN_CONTRACT_ADDRESS, votokenABI.abi, signer);
+        voteContract = new ethers.Contract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi, signer);
+        return true;
     } catch (e) {
-        console.log('Connect to Metamask has been rejected: ', e);
+        console.log('Failed to initialize contracts: ', e);
+        return false;
     }
 };
 
@@ -47,7 +53,6 @@ const addTokenToMetaMask = async () => {
 };
 
 const getUsedToken = async () => {
-    const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
     try {
         const used = await voteContract.totalVoteUsed();
         const count = Number(used);
@@ -59,7 +64,6 @@ const getUsedToken = async () => {
 };
 
 export const mintToken = async () => {
-    const tokenContract = await getContract(TOKEN_CONTRACT_ADDRESS, votokenABI.abi);
     try {
         const tx = await tokenContract.mint();
         console.log('Mint transaction:', tx);
@@ -82,7 +86,6 @@ export const mintToken = async () => {
 };
 
 export const getTokenMinted = async () => {
-    const tokenContract = await getContract(TOKEN_CONTRACT_ADDRESS, votokenABI.abi);
     try {
         const mintedToken = await tokenContract?.totalSupply();
         const supply = displayBigInt(mintedToken);
@@ -105,7 +108,6 @@ export const getTokenMinted = async () => {
 };
 
 export const addParty = async (name) => {
-    const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
     try {
         const tx = await voteContract.addParty(name);
         console.log('add party transaction:', tx);
@@ -117,7 +119,6 @@ export const addParty = async (name) => {
 };
 
 export const getParties = async () => {
-    const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
     try {
         const parties = await voteContract.getParties();
         return parties;
@@ -128,7 +129,6 @@ export const getParties = async () => {
 };
 
 export const callVote = async (name) => {
-    const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
     try {
         const tx = await voteContract.vote(name);
         console.log('voting transaction:', tx);
@@ -149,7 +149,6 @@ export const callVote = async (name) => {
 };
 
 export const getVotes = async (voter) => {
-    const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
     try {
         const votes = await voteContract.getVotes(voter);
         return votes ?? null;
@@ -164,7 +163,6 @@ export const displayBigInt = (count) => {
 };
 
 export const checkOwner = async (address) => {
-    const voteContract = await getContract(VOTE_CONTRACT_ADDRESS, partyVoteABI.abi);
     try {
         const owner = await voteContract.owner();
         return ethers.getAddress(owner) === ethers.getAddress(address);
@@ -172,4 +170,4 @@ export const checkOwner = async (address) => {
         console.log('fail to get owner address: ', e);
     }
     return false;
-}
+};

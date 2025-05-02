@@ -59,7 +59,7 @@ const getRandomColor = () => {
 };
 
 const Dashboard = () => {
-  const { account } = useContext(AccountContext);
+  const { account, isConnected } = useContext(AccountContext);
   const [tokenSupply, setTokenSupply] = useState({ minted: '0', used: '0', remain: '0' });
   const [partyList, setPartyList] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -94,9 +94,8 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    initialise();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    isConnected && initialise();
+  }, [isConnected]);
 
   const handleOnClick = (name) => {
     handleShow();
