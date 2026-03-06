@@ -27,10 +27,10 @@ const Profile = () => {
 
       {!account && (
         <>
-          <h4>By register or login, you will be connected to your wallet</h4>
+          <p className="profile-connect-hint">Connect your wallet to view your voter profile</p>
           <div className="login-div">
             <Button variant="primary" id="login" size="lg" onClick={login} disabled={inProgress}>
-              {inProgress ? "Logging in..." : "Login"}
+              {inProgress ? "Connecting..." : "Connect Wallet"}
             </Button>
           </div>
         </>

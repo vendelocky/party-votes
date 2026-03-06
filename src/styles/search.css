@@ -1,8 +1,63 @@
+.search-container {
+    max-width: 700px;
+    width: 100%;
+}
+
 .input-form {
-    min-width: 600px;
+    min-width: 520px;
+}
+
+.input-form .form-control {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-right: none !important;
+    color: #e2e8f0 !important;
+    border-radius: 12px 0 0 12px !important;
+    padding: 14px 18px !important;
+    font-size: 0.95rem !important;
+    transition: border-color 0.2s ease, background 0.2s ease !important;
+}
+
+.input-form .form-control:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(124, 111, 255, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(124, 111, 255, 0.1) !important;
+    outline: none !important;
+}
+
+.input-form .form-control::placeholder {
+    color: #475569 !important;
+}
+
+.input-form #search {
+    background: linear-gradient(135deg, #7c6fff, #22d3ee) !important;
+    border: none !important;
+    border-radius: 0 12px 12px 0 !important;
+    font-weight: 600 !important;
+    padding: 0 24px !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.3px !important;
+    transition: opacity 0.2s ease !important;
+}
+
+.input-form #search:hover {
+    opacity: 0.88 !important;
+}
+
+.search-loading {
+    color: #64748b;
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 20px 0;
 }
 
 .address {
-    border-bottom: 1px solid lightgray;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     width: 100%;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
 }

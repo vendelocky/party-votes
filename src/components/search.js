@@ -45,10 +45,10 @@ const Search = () => {
   };
 
   return (
-    <div className="justify-content-center">
+    <div className="search-container">
       <h1>Search vote by address</h1>
       {searchForm()}
-      {isLoading && <div>Searching...</div>}
+      {isLoading && <div className="search-loading">Searching...</div>}
       {!isLoading && searched && <VoteCard account={displayAddress} voter={voter} />}
     </div>
   );

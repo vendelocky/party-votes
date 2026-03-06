@@ -6,56 +6,68 @@ import { Modal, Button } from 'react-bootstrap';
 import { AccountContext } from '../Provider';
 import { getTokenMinted, getParties, callVote } from '../utils/contractUtilities';
 
-// Register necessary chart components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+
+const PARTY_PALETTE = [
+  '#7c6fff', '#22d3ee', '#10b981', '#f59e0b',
+  '#ec4899', '#ef4444', '#8b5cf6', '#06b6d4',
+  '#a3e635', '#fb923c',
+];
+
+const getPartyColor = (index) => PARTY_PALETTE[index % PARTY_PALETTE.length];
+
 const CHART_OPTIONS = {
-  indexAxis: 'y', // This makes the chart horizontal
   responsive: true,
+  maintainAspectRatio: true,
   scales: {
     x: {
-      stacked: true, // Stacks the bars together horizontally
-      display: false, // Hides the x-axis grid and labels
+      grid: { display: false },
+      border: { display: false },
+      ticks: {
+        color: '#94a3b8',
+        font: { size: 13, weight: '500', family: 'Inter, sans-serif' },
+      },
     },
     y: {
-      stacked: true,
-      display: false,
-    }
+      grid: {
+        color: 'rgba(255,255,255,0.06)',
+        drawBorder: false,
+      },
+      border: { display: false, dash: [4, 4] },
+      ticks: {
+        color: '#64748b',
+        stepSize: 1,
+        font: { size: 12, family: 'Inter, sans-serif' },
+      },
+      beginAtZero: true,
+    },
   },
   plugins: {
-    legend: {
-      position: 'bottom',
-      labels: {
-        boxWidth: 12
-      },
-    },
+    legend: { display: false },
     title: {
       display: true,
-      text: 'Votes Distribution',
-      font: {
-        size: 20,
+      text: 'Vote Distribution',
+      color: '#e2e8f0',
+      font: { size: 17, weight: '700', family: 'Inter, sans-serif' },
+      padding: { bottom: 24 },
+    },
+    tooltip: {
+      backgroundColor: 'rgba(13,14,20,0.95)',
+      titleColor: '#e2e8f0',
+      bodyColor: '#94a3b8',
+      borderColor: 'rgba(124,111,255,0.4)',
+      borderWidth: 1,
+      padding: 12,
+      cornerRadius: 10,
+      callbacks: {
+        label: (ctx) => `  ${ctx.parsed.y} vote${ctx.parsed.y !== 1 ? 's' : ''}`,
       },
     },
   },
-  layout: {
-    padding: {
-      top: 100,
-      right: 0,
-      left: 0
-    },
-  },
-  barThickness: 30, // Fixed bar thickness (set to your preference)
-  maxBarThickness: 30, // Maximum bar thickness
-  animation: false,
-};
-
-// Function to generate random colors
-const getRandomColor = () => {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+  borderRadius: 10,
+  borderSkipped: false,
+  barThickness: 52,
+  animation: { duration: 700, easing: 'easeOutQuart' },
 };
 
 const Dashboard = () => {
@@ -77,13 +89,11 @@ const Dashboard = () => {
 
   const fetchParty = async () => {
     const parties = await getParties();
-    const partiesWithColor = parties?.map((party) => {
-      return {
-        name: party[0],
-        count: Number(party[1]),
-        color: getRandomColor()
-      };
-    });
+    const partiesWithColor = parties?.map((party, index) => ({
+      name: party[0],
+      count: Number(party[1]),
+      color: getPartyColor(index),
+    }));
     setShowParty(partiesWithColor?.length > 0 ? true : false);
     setPartyList(partiesWithColor);
   };
@@ -95,6 +105,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     isConnected && initialise();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected]);
 
   const handleOnClick = (name) => {
@@ -111,36 +122,35 @@ const Dashboard = () => {
   };
 
   const displayCard = () => {
-    return partyList?.map((party) => {
-      return (
-        <div className="party-card" style={{ borderColor: party.color }}>
-          <div className="card-title">{party.name}</div>
-          <div className="card-description">
-            <div>
-              Vote count: {party.count}
-            </div>
-            {!!account && (
-              <div>
-                <Button variant="success" id="vote" size="sm" onClick={() => handleOnClick(party.name)}>
-                  Vote
-                </Button>
-              </div>
-            )}
+    return partyList?.map((party) => (
+      <div key={party.name} className="party-card" style={{ borderLeftColor: party.color }}>
+        <div className="card-title" style={{ color: party.color }}>{party.name}</div>
+        <div className="card-description">
+          <div>
+            <div className="card-vote-count">{party.count}</div>
+            <div className="card-vote-label">votes</div>
           </div>
+          {!!account && (
+            <Button variant="success" id="vote" size="sm" onClick={() => handleOnClick(party.name)}>
+              Vote
+            </Button>
+          )}
         </div>
-      );
-    });
+      </div>
+    ));
   };
 
-  const datasets = partyList?.map((party) => ({
-    label: party.name,
-    data: [party.count],
-    backgroundColor: party.color,
-  }));
-
   const data = {
-    labels: ['vote count'],
-    datasets: datasets,
+    labels: partyList?.map(p => p.name),
+    datasets: [{
+      label: 'Votes',
+      data: partyList?.map(p => p.count),
+      backgroundColor: partyList?.map(p => `${p.color}bb`),
+      borderColor: partyList?.map(p => p.color),
+      borderWidth: 2,
+      borderRadius: 10,
+      borderSkipped: false,
+    }],
   };
 
   return (
@@ -169,17 +179,18 @@ const Dashboard = () => {
 
       <div className="token-container">
         <div className="token-div">
-          <div className="d-flex">
-            <div>Token minted</div>
-            <div>{tokenSupply.minted}</div>
+          <div className="token-section-title">Token Stats</div>
+          <div className="token-stat-row">
+            <span>Total Minted</span>
+            <span className="token-stat-value">{tokenSupply.minted}</span>
           </div>
-          <div className="d-flex">
-            <div>Used Token (voted)</div>
-            <div>{tokenSupply.used}</div>
+          <div className="token-stat-row">
+            <span>Used (voted)</span>
+            <span className="token-stat-value">{tokenSupply.used}</span>
           </div>
-          <div className="d-flex">
-            <div>Unused Token (no vote)</div>
-            <div>{tokenSupply.remain}</div>
+          <div className="token-stat-row">
+            <span>Unused (no vote)</span>
+            <span className="token-stat-value">{tokenSupply.remain}</span>
           </div>
         </div>
       </div>
@@ -189,14 +200,14 @@ const Dashboard = () => {
           <Modal.Title>Vote for {partyName}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to vote for {partyName} party?
+          Are you sure you want to vote for <strong style={{ color: '#a89fff' }}>{partyName}</strong> party?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="outline-secondary" onClick={handleClose}>
             Cancel
           </Button>
           <Button variant="success" onClick={handleVote} disabled={isVoting}>
-            Vote
+            {isVoting ? 'Submitting...' : 'Confirm Vote'}
           </Button>
         </Modal.Footer>
       </Modal>

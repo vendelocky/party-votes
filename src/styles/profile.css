@@ -1,3 +1,15 @@
+.profile-container {
+    width: 100%;
+    max-width: 600px;
+}
+
+.profile-connect-hint {
+    text-align: center;
+    color: #64748b;
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
 .login-div {
     display: flex;
     justify-content: center;
@@ -5,5 +17,51 @@
 }
 
 .login-div button {
-    margin-top: 40px;
+    margin-top: 20px;
+}
+
+/* Override Bootstrap buttons for dark theme */
+.login-div #login {
+    background: linear-gradient(135deg, #7c6fff, #22d3ee);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    padding: 12px 40px;
+    font-size: 1rem;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.login-div #login:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+.login-div #vote {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #34d399;
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 10px 32px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.login-div #vote:hover {
+    background: rgba(16, 185, 129, 0.25);
+    border-color: #10b981;
+    color: #6ee7b7;
+}
+
+/* Address display */
+.address {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    width: 100%;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-family: 'Courier New', monospace;
+    word-break: break-all;
+    padding-bottom: 4px;
+    margin-bottom: 4px;
 }

@@ -32,7 +32,7 @@ const Add = () => {
   }
 
   return (
-    <div>
+    <div className="add-container">
       <h1>Add New Party</h1>
       <div>
         <InputGroup className="mb-3 input-form">

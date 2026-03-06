@@ -1,17 +1,27 @@
 .app-container {
   display: flex;
+  min-height: 100vh;
+  background-color: #0d0e14;
 }
 
 .main-container {
   width: 100%;
-  padding: 12px;
+  padding: 40px 48px;
   display: flex;
   justify-content: center;
   flex-wrap: nowrap;
+  overflow-y: auto;
 }
 
 html h1 {
   margin-bottom: 40px;
   display: flex;
   justify-content: center;
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #7c6fff 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
 }
